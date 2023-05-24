@@ -1,0 +1,58 @@
+name: Dev Deploy
+
+on:
+  workflow_call:
+
+permissions: 
+  id-token: write 
+  contents: read 
+    
+
+
+jobs:
+  build:
+    environment: Dev
+    runs-on: ubuntu-latest
+    env:
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-region: ${{ secrets.AWS_REGION }}
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install python dev dependencies
+        run: pip install --target ./src -r requirements-dev.txt
+
+      - name: Install python infrastructure dependencies
+        run: pip install -r requirements-infra.txt
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.3.0'
+
+      - name: install aws cdk
+        run: npm install -g aws-cdk
+
+
+      - name: Configure AWS Credentials (Raw ACcount)
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::783978466054:role/GitHubOIDCRole
+          aws-region: us-east-1
+      
+      - name: cdk synth
+        run: cdk synth fitness-app-dev-stack
+  
+      - name: cdk deploy
+        run: cdk deploy fitness-app-dev-stack --require-approval never
