@@ -22,19 +22,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Python 3.7
+      - name: Setup Python 3.11
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: 3.11
 
       - name: Install python dependencies
         run: pip install -r requirements.txt
 
       - name: Install python dev dependencies
-        run: pip install --target ./src -r requirements-dev.txt
+        run: pip install --target ./software/src -r requirements-dev.txt
 
       - name: Install python infrastructure dependencies
-        run: pip install -r requirements-infra.txt
+        run: pip install -r ./infra/requirements-infra.txt
 
       - name: Setup node
         uses: actions/setup-node@v1
@@ -52,7 +52,7 @@ jobs:
           aws-region: us-east-1
       
       - name: cdk synth
-        run: cdk synth fitness-app-dev-stack
+        run: cdk synth {INSERT_STACK_NAME}
   
       - name: cdk deploy
-        run: cdk deploy fitness-app-dev-stack --require-approval never
+        run: cdk deploy {INSERT_STACK_NAME_HERE} --require-approval never
