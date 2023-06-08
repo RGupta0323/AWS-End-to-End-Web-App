@@ -55,7 +55,7 @@ jobs:
           aws-region: us-east-1
       
       - name: cdk synth
-        run: cdk synth {INSERT_STACK_NAME}
+        run: cdk synth CdkStack
   
       - name: cdk deploy
         run: cdk deploy {INSERT_STACK_NAME_HERE} --require-approval never
