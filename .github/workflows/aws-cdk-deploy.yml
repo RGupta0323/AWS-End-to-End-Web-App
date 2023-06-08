@@ -58,4 +58,4 @@ jobs:
         run: cdk synth CdkStack
   
       - name: cdk deploy
-        run: cdk deploy {INSERT_STACK_NAME_HERE} --require-approval never
+        run: cdk deploy CdkStack --require-approval never
